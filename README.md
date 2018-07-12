@@ -1,2 +1,3 @@
 # expense-manager
-Expense Manager
+
+Sample App: Expense Manager
