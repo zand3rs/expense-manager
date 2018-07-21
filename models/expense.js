@@ -4,13 +4,14 @@
  */
 
 const _ = require("lodash");
+const Base = require("./base");
 
 //==============================================================================
 
-class Expense {
+class Expense extends Base {
 
   constructor() {
-    const self = this;
+    super("expenses");
   }
 
 }

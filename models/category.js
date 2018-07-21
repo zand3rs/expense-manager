@@ -4,13 +4,14 @@
  */
 
 const _ = require("lodash");
+const Base = require("./base");
 
 //==============================================================================
 
-class Category {
+class Category extends Base {
 
   constructor() {
-    const self = this;
+    super("categories");
   }
 
 }
