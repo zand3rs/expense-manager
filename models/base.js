@@ -4,6 +4,7 @@
  */
 
 const _ = require("lodash");
+const util = require("util");
 const mysql = require("mysql");
 
 const config = require("../config");
@@ -29,9 +30,8 @@ class Base {
 
   //---------------------------------------------------------------------------
 
-  find(options, done) {
-    const cmd = "SELECT * FROM " + this.tableName;
-    const {sql, vars} = this._buildQuery(cmd, options);
+  query(command, options, done) {
+    const {sql, vars} = this._buildQuery(command, options);
 
     conn.query(sql, vars, (error, results, fields) => {
       done(error, results);
@@ -40,25 +40,56 @@ class Base {
 
   //---------------------------------------------------------------------------
 
+  find(options, done) {
+    const cmd = util.format("SELECT * FROM %s", this.tableName);
+    this.query(cmd, options, done);
+  }
+
+  //---------------------------------------------------------------------------
+
   findOne(options, done) {
+    const cmd = util.format("SELECT * FROM %s", this.tableName);
+    const _options = _.merge({}, options, { limit: 1 });
+
+    this.query(cmd, _options, (err, records) => {
+      done(err, _.first(records));
+    });
+  }
+
+  //---------------------------------------------------------------------------
+
+  create(attrs, done) {
+    const fields = [];
+    const values = [];
+    const vars = [];
+    const options = { vars };
+
+    _.forIn(attrs, (v, k) => {
+      fields.push(k);
+      values.push("?");
+      vars.push(v);
+    });
+
+    const cmd = util.format("INSERT INTO %s(%s) VALUES(%s)", this.tableName,
+                            _.join(fields), _.join(values));
+
+    this.query(cmd, options, (err, results) => {
+      if (err) {
+        return done(err);
+      }
+      this.findOne({ where: "id=" + _.get(results, "insertId") }, done);
+    });
+  }
+
+  //---------------------------------------------------------------------------
+
+  update(attrs, criteria, done) {
     done();
   }
 
   //---------------------------------------------------------------------------
 
-  create(options, done) {
-    done();
-  }
-
-  //---------------------------------------------------------------------------
-
-  update(options, done) {
-    done();
-  }
-
-  //---------------------------------------------------------------------------
-
-  destroy(options, done) {
+  destroy(criteria, done) {
     done();
   }
 
