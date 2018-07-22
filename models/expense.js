@@ -11,7 +11,11 @@ const Base = require("./base");
 class Expense extends Base {
 
   constructor() {
-    super("expenses");
+    const options = {
+      tableName: "expenses"
+    };
+
+    super(options);
   }
 
 }
@@ -19,6 +23,6 @@ class Expense extends Base {
 //==============================================================================
 //-- export
 
-module.exports = Expense;
+module.exports = new Expense();
 
 //==============================================================================
