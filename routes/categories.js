@@ -6,15 +6,16 @@ const Category = require("../models/category");
 
 //-- index
 router.get("/", function(req, res, next) {
-  Category.find({where: "id=? or id=?", order: "id desc", limit: "10", vars: [1, 2]}, (err, records) => {
-    console.log(err, records);
+  Category.find({limit: "10"}, (err, records) => {
+    res.json(records);
   });
-  res.send("categories");
 });
 
 //-- show
 router.get("/:id", function(req, res, next) {
-  res.send("show category: " + req.param("id"));
+  Category.findOne({where: "id=?", vars: [req.param("id")]}, (err, record) => {
+    res.json(record);
+  });
 });
 
 //-- edit
@@ -24,7 +25,14 @@ router.get("/:id/edit", function(req, res, next) {
 
 //-- create
 router.post("/", function(req, res, next) {
-  res.send("create categories");
+  const attrs = {
+    title: req.param("title"),
+    description: req.param("description")
+  };
+
+  Category.create(attrs, (err, record) => {
+    res.json(record);
+  });
 });
 
 //-- update
