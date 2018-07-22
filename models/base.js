@@ -25,20 +25,17 @@ class Base {
   constructor(options) {
     const self = this;
     this.tableName = _.get(options, "tableName") || "";
-    this.attributes = _.get(options, "attributes", {});
   }
 
   //---------------------------------------------------------------------------
 
   find(options, done) {
-    let sql = "SELECT * FROM " + this.tableName;
-    let vars = [];
+    const cmd = "SELECT * FROM " + this.tableName;
+    const {sql, vars} = this._buildQuery(cmd, options);
 
     conn.query(sql, vars, (error, results, fields) => {
-      const records = _.map(results, val => this._toRecord(val));
-      done(error, records);
+      done(error, results);
     });
-
   }
 
   //---------------------------------------------------------------------------
@@ -68,15 +65,24 @@ class Base {
   //===========================================================================
   //-- private
 
-  _toRecord(value) {
-    const record = {};
+  _buildQuery(command, options) {
+    let sql = command;
+    let where = _.get(options, "where") || "";
+    let order = _.get(options, "order") || "";
+    let limit = _.get(options, "limit") || "";
+    let vars  = _.get(options, "vars") || [];
 
-    _.forIn(this.attributes, (val, key) => {
-      const field = _.get(value, _.snakeCase(key), null);
-      record[key] = (!_.isNil(field) && _.isFunction(val)) ? val(field) : null;
-    });
+    if (!_.isEmpty(where)) {
+      sql += " WHERE " + where;
+    }
+    if (!_.isEmpty(order)) {
+      sql += " ORDER BY " + order;
+    }
+    if (!_.isEmpty(limit)) {
+      sql += " LIMIT " + limit;
+    }
 
-    return record;
+    return { sql, vars };
   }
 
 }

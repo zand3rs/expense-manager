@@ -6,7 +6,7 @@ const Category = require("../models/category");
 
 //-- index
 router.get("/", function(req, res, next) {
-  Category.find({}, (err, records) => {
+  Category.find({where: "id=? or id=?", order: "id desc", limit: "10", vars: [1, 2]}, (err, records) => {
     console.log(err, records);
   });
   res.send("categories");
