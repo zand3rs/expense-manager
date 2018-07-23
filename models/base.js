@@ -83,14 +83,45 @@ class Base {
 
   //---------------------------------------------------------------------------
 
-  update(attrs, criteria, done) {
-    done();
+  update(attrs, options, done) {
+    const fields = [];
+    const vars = [];
+
+    const _where = _.get(options, "where") || "";
+    const _vars = _.get(options, "vars") || [];
+
+    _.forIn(attrs, (v, k) => {
+      fields.push(k + "=?");
+      vars.push(v);
+    });
+
+    if (!_.isEmpty(vars)) {
+      _.set(options, "vars", _.concat(vars, _vars));
+    }
+
+    const cmd = util.format("UPDATE %s SET %s", this.tableName, _.join(fields));
+
+    this.query(cmd, options, (err, results) => {
+      if (err) {
+        return done(err);
+      }
+      this.find({ where: _where, vars: _vars }, done);
+    });
   }
 
   //---------------------------------------------------------------------------
 
-  destroy(criteria, done) {
-    done();
+  destroy(options, done) {
+    const cmd = util.format("DELETE FROM %s", this.tableName);
+
+    this.find(options, (err, records) => {
+      if (err) {
+        return done(err);
+      }
+      this.query(cmd, options, (err, results) => {
+        done(err, records);
+      });
+    });
   }
 
   //===========================================================================
