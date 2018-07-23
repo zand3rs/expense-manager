@@ -6,29 +6,45 @@ const Category = require("../models/category");
 
 //-- index
 router.get("/", function(req, res, next) {
-  Category.find({limit: "10"}, (err, records) => {
+  const options = {
+    limit: 10
+  };
+
+  Category.find(options, (err, records) => {
     res.json(records);
   });
 });
 
 //-- show
 router.get("/:id", function(req, res, next) {
-  Category.findOne({where: "id=?", vars: [req.param("id")]}, (err, record) => {
+  const options = {
+    where: "id=?",
+    vars: [_.get(req.params, "id")]
+  };
+
+  Category.findOne(options, (err, record) => {
     res.json(record);
   });
 });
 
 //-- edit
 router.get("/:id/edit", function(req, res, next) {
-  res.send("edit category: " + req.param("id"));
+  const options = {
+    where: "id=?",
+    vars: [_.get(req.params, "id")]
+  };
+
+  Category.findOne(options, (err, record) => {
+    res.json(record);
+  });
 });
 
 //-- create
 router.post("/", function(req, res, next) {
-  const attrs = {
-    title: req.param("title"),
-    description: req.param("description")
-  };
+  const attrs = _.omitBy({
+    title: _.get(req.body, "title"),
+    description: _.get(req.body, "description")
+  }, _.isNil);
 
   Category.create(attrs, (err, record) => {
     res.json(record);
@@ -37,12 +53,31 @@ router.post("/", function(req, res, next) {
 
 //-- update
 router.put("/:id", function(req, res, next) {
-  res.send("update category: " + req.param("id"));
+  const options = {
+    where: "id=?",
+    vars: [_.get(req.params, "id")]
+  };
+
+  const attrs = _.omitBy({
+    title: _.get(req.body, "title"),
+    description: _.get(req.body, "description")
+  }, _.isNil);
+
+  Category.update(attrs, options, (err, records) => {
+    res.json(_.first(records));
+  });
 });
 
 //-- destroy
 router.delete("/:id", function(req, res, next) {
-  res.send("destroy category: " + req.param("id"));
+  const options = {
+    where: "id=?",
+    vars: [_.get(req.params, "id")]
+  };
+
+  Category.destroy(options, (err, records) => {
+    res.json(_.first(records));
+  });
 });
 
 module.exports = router;
