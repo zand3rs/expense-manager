@@ -27,6 +27,8 @@ $ npm start
 
 ### Categories
 
+---
+
 #### `GET` /categories
 
 List categories.
@@ -38,6 +40,8 @@ List categories.
 | **Content-Type** | `string` | application/json |
 | **Accept** | `string` | application/json |
 
+---
+
 #### `GET` /categories/:id
 
 Show category details.
@@ -48,6 +52,8 @@ Show category details.
 |---------|----|-----------|
 | **Content-Type** | `string` | application/json |
 | **Accept** | `string` | application/json |
+
+---
 
 #### `POST` /categories
 
@@ -69,6 +75,8 @@ Payload should be in JSON format.
 | **title** | `string` | Category title |
 | **description** | `string` | Category description |
 
+---
+
 #### `PUT` /categories/:id
 
 Update category.
@@ -89,6 +97,8 @@ Payload should be in JSON format.
 | **title** |`string` | Category title |
 | **description** | `string` | Category description |
 
+---
+
 #### `DELETE` /categories/:id
 
 Delete a category.
@@ -103,6 +113,8 @@ Delete a category.
 
 ### Expenses
 
+---
+
 #### `GET` /expenses
 
 List expenses.
@@ -114,6 +126,7 @@ List expenses.
 | **Content-Type** | `string` | application/json |
 | **Accept** | `string` | application/json |
 
+---
 
 #### `GET` /expenses/:id
 
@@ -126,6 +139,7 @@ Show expense details.
 | **Content-Type** | `string` | application/json |
 | **Accept** | `string` | application/json |
 
+---
 
 #### `GET` /expenses/summary
 
@@ -138,6 +152,7 @@ Show expenses summary.
 | **Content-Type** | `string` | application/json |
 | **Accept** | `string` | application/json |
 
+---
 
 #### `GET` /categories/:category_id/expenses
 
@@ -150,6 +165,7 @@ List expenses under a specific category.
 | **Content-Type** | `string` | application/json |
 | **Accept** | `string` | application/json |
 
+---
 
 #### `POST` /expenses
 
@@ -173,6 +189,7 @@ Payload should be in JSON format.
 | **amount**  | `decimal` | Expense amount |
 | **transaction_date** | `string` | Expense date |
 
+---
 
 #### `POST` /categories/:category_id/expenses
 
@@ -195,6 +212,8 @@ Payload should be in JSON format.
 | **amount** | `decimal` | Expense amount |
 | **transaction_date** | `string` | Expense date |
 
+---
+
 #### `PUT` /expenses/:id
 
 Update expense.
@@ -216,6 +235,8 @@ Payload should be in JSON format.
 | **title** |`string` | Expense title |
 | **amount** | `decimal` | Expense amount |
 | **transaction_date** | `string` | Expense date |
+
+---
 
 #### `DELETE` /expenses/:id
 
