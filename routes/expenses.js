@@ -2,7 +2,21 @@ const express = require("express");
 const router = express.Router({ mergeParams: true });
 
 const _ = require("lodash");
+const util = require("util");
 const Expense = require("../models/expense");
+const Category = require("../models/category");
+
+//-- summary
+router.get("/summary", function(req, res, next) {
+  const cmd = util.format("SELECT IFNULL(c.title, 'Uncategorized') category, sum(e.amount) total"
+                        + " from %s e left join %s c on e.category_id = c.id group by c.id",
+                        Expense.tableName, Category.tableName);
+  const options = {};
+
+  Expense.query(cmd, options, (err, results) => {
+    res.json(err || results);
+  });
+});
 
 //-- index
 router.get("/", function(req, res, next) {
