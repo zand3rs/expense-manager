@@ -1,3 +1,8 @@
+/*
+ * Expenses
+ *
+ */
+
 const express = require("express");
 const router = express.Router({ mergeParams: true });
 
@@ -6,6 +11,7 @@ const util = require("util");
 const Expense = require("../models/expense");
 const Category = require("../models/category");
 
+//------------------------------------------------------------------------------
 //-- summary
 router.get("/summary", function(req, res, next) {
   const cmd = util.format("SELECT IFNULL(c.title, 'Uncategorized') category, sum(e.amount) total"
@@ -18,6 +24,7 @@ router.get("/summary", function(req, res, next) {
   });
 });
 
+//------------------------------------------------------------------------------
 //-- index
 router.get("/", function(req, res, next) {
   const options = {
@@ -31,10 +38,11 @@ router.get("/", function(req, res, next) {
   }
 
   Expense.find(options, (err, records) => {
-    res.json(records);
+    res.json(err || records);
   });
 });
 
+//------------------------------------------------------------------------------
 //-- show
 router.get("/:id", function(req, res, next) {
   const options = {
@@ -43,10 +51,11 @@ router.get("/:id", function(req, res, next) {
   };
 
   Expense.findOne(options, (err, record) => {
-    res.json(record);
+    res.json(err || record);
   });
 });
 
+//------------------------------------------------------------------------------
 //-- edit
 router.get("/:id/edit", function(req, res, next) {
   const options = {
@@ -55,13 +64,15 @@ router.get("/:id/edit", function(req, res, next) {
   };
 
   Expense.findOne(options, (err, record) => {
-    res.json(record);
+    res.json(err || record);
   });
 });
 
+//------------------------------------------------------------------------------
 //-- create
 router.post("/", function(req, res, next) {
   const attrs = _.omitBy({
+    category_id: _.get(req.params, "category_id") || _.get(req.body, "category_id"),
     title: _.get(req.body, "title"),
     amount: _.get(req.body, "amount"),
     transaction_date: _.get(req.body, "transaction_date")
@@ -72,6 +83,7 @@ router.post("/", function(req, res, next) {
   });
 });
 
+//------------------------------------------------------------------------------
 //-- update
 router.put("/:id", function(req, res, next) {
   const options = {
@@ -86,10 +98,11 @@ router.put("/:id", function(req, res, next) {
   }, _.isNil);
 
   Expense.update(attrs, options, (err, records) => {
-    res.json(_.first(records));
+    res.json(err || _.first(records));
   });
 });
 
+//------------------------------------------------------------------------------
 //-- destroy
 router.delete("/:id", function(req, res, next) {
   const options = {
@@ -98,8 +111,13 @@ router.delete("/:id", function(req, res, next) {
   };
 
   Expense.destroy(options, (err, records) => {
-    res.json(_.first(records));
+    res.json(err || _.first(records));
   });
 });
 
+//==============================================================================
+//-- export
+
 module.exports = router;
+
+//==============================================================================

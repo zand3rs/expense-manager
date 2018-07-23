@@ -1,9 +1,15 @@
+/*
+ * Categories
+ *
+ */
+
 const express = require("express");
 const router = express.Router();
 
 const _ = require("lodash");
 const Category = require("../models/category");
 
+//------------------------------------------------------------------------------
 //-- index
 router.get("/", function(req, res, next) {
   const options = {
@@ -11,10 +17,11 @@ router.get("/", function(req, res, next) {
   };
 
   Category.find(options, (err, records) => {
-    res.json(records);
+    res.json(err || records);
   });
 });
 
+//------------------------------------------------------------------------------
 //-- show
 router.get("/:id", function(req, res, next) {
   const options = {
@@ -23,10 +30,11 @@ router.get("/:id", function(req, res, next) {
   };
 
   Category.findOne(options, (err, record) => {
-    res.json(record);
+    res.json(err || record);
   });
 });
 
+//------------------------------------------------------------------------------
 //-- edit
 router.get("/:id/edit", function(req, res, next) {
   const options = {
@@ -35,10 +43,11 @@ router.get("/:id/edit", function(req, res, next) {
   };
 
   Category.findOne(options, (err, record) => {
-    res.json(record);
+    res.json(err || record);
   });
 });
 
+//------------------------------------------------------------------------------
 //-- create
 router.post("/", function(req, res, next) {
   const attrs = _.omitBy({
@@ -47,10 +56,11 @@ router.post("/", function(req, res, next) {
   }, _.isNil);
 
   Category.create(attrs, (err, record) => {
-    res.json(record);
+    res.json(err || record);
   });
 });
 
+//------------------------------------------------------------------------------
 //-- update
 router.put("/:id", function(req, res, next) {
   const options = {
@@ -64,10 +74,11 @@ router.put("/:id", function(req, res, next) {
   }, _.isNil);
 
   Category.update(attrs, options, (err, records) => {
-    res.json(_.first(records));
+    res.json(err || _.first(records));
   });
 });
 
+//------------------------------------------------------------------------------
 //-- destroy
 router.delete("/:id", function(req, res, next) {
   const options = {
@@ -76,8 +87,13 @@ router.delete("/:id", function(req, res, next) {
   };
 
   Category.destroy(options, (err, records) => {
-    res.json(_.first(records));
+    res.json(err || _.first(records));
   });
 });
 
+//==============================================================================
+//-- export
+
 module.exports = router;
+
+//==============================================================================
